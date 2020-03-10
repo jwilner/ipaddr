@@ -1,11 +1,11 @@
-# ipaddr
+package ipaddr_test
 
-Because I'm tired of reimplementing the same IP operations everywhere in Go.
-
-Expressive IP utilities implemented with efficient, idiomatic lazy operations.
-
-```go
-import "github.com/jwilner/ipaddr"
+import (
+	"context"
+	"fmt"
+	"github.com/jwilner/ipaddr"
+	"net"
+)
 
 func ExampleSplit() {
 	ctx, cncl := context.WithCancel(context.Background())
@@ -42,4 +42,28 @@ func ExampleRange() {
 	// 10.6.0.0/16
 	// 10.8.0.0/16
 }
-```
+
+func ExampleAdd() {
+	fmt.Println(ipaddr.Add(net.IPv4(10, 0, 0, 1), -2))
+	fmt.Println(ipaddr.Add(net.IPv4(10, 0, 0, 1), 3))
+
+	// Output:
+	// 9.255.255.255
+	// 10.0.0.4
+}
+
+func ExampleNext() {
+	res := ipaddr.Next(net.IPNet{IP: net.IP{10, 0, 0, 0}, Mask: net.CIDRMask(16, 32)})
+	fmt.Println(res)
+
+	// Output:
+	// 10.1.0.0/16
+}
+
+func ExamplePrev() {
+	res := ipaddr.Prev(net.IPNet{IP: net.IP{10, 0, 0, 0}, Mask: net.CIDRMask(16, 32)})
+	fmt.Println(res)
+
+	// Output:
+	// 9.255.0.0/16
+}
